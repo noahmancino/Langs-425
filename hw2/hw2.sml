@@ -62,6 +62,38 @@ Control.Print.printLength := 20;
 
 (**** PUT PROBLEMS 1-8 HERE ****)
 
+fun make_silly_json(i) =
+   let fun silly_helper(i, record) =
+      case i of
+         0 => record 
+      |  int => let val new_obj = Object [(real_to_string(int_to_real(i)), True)]
+            in
+                  silly_helper(i - 1, record @ [new_obj])
+            end
+   in
+      silly_helper(i, [])
+   end;
+
+fun assoc(k, xs) =
+   case xs of
+      [] => NONE
+   |  (k_match, value)::tail => if k_match = k then SOME value else assoc(k, tail);
+   
+
+fun dot(f, j) = 
+   case j of
+      Object inner => assoc(f, inner)
+   |  _ => NONE
+
+fun one_fields(j) =
+   let fun fields_acc(j, l) =
+      case j of
+         Object [] => l
+      |  Object ((first, second)::tail) => first::fields_acc(Object tail, l)
+      | _ => []
+   in 
+      fields_acc(j, [])
+   end;
 
 
 (* histogram and historgram_for_field are provided, but they use your 
